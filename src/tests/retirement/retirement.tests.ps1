@@ -28,6 +28,103 @@ Describe 'Get-AzureRestMethodUriPath' {
 }
 
 Describe 'Invoke-AzureRestApi' {
+    BeforeAll {
+        $expected = 'JsonText'
+
+        Mock Invoke-AzRestMethod {
+            return @{ Content = $expected }
+        } -ModuleName 'retirement' -Verifiable
+    }
+
+    Context 'When to invoke an Azure REST API with a path WITH resource group' {
+        BeforeEach {
+            $commonCmdletParams = @{
+                Method               = 'GET'
+                SubscriptionId       = '11111111-1111-1111-1111-111111111111'
+                ResourceGroupName    = 'test-rg'
+                ResourceProviderName = 'Resource.Provider'
+                ResourceType         = 'resourceType'
+                Name                 = 'resource1'
+                ApiVersion           = '0000-00-00'
+            }
+        }
+
+        It 'Should call Get-AzureRestMethodUriPath and Invoke-AzRestMethod then return the response from the Azure REST API' {
+            $result = Invoke-AzureRestApi @commonCmdletParams
+
+            Should -InvokeVerifiable
+            $result.Content | Should -BeExactly $expected
+        }
+
+        It 'Should call Get-AzureRestMethodUriPath and Invoke-AzRestMethod then return the response from the Azure REST API with query string' {
+            $commonCmdletParams.QueryString = 'test=test'
+            $result = Invoke-AzureRestApi @commonCmdletParams
+
+            Should -InvokeVerifiable
+            $result.Content | Should -BeExactly $expected
+        }
+
+        It 'Should call Get-AzureRestMethodUriPath and Invoke-AzRestMethod then return the response from the Azure REST API with request body' {
+            $commonCmdletParams.RequestBody = 'test'
+            $result = Invoke-AzureRestApi @commonCmdletParams
+
+            Should -InvokeVerifiable
+            $result.Content | Should -BeExactly $expected
+        }
+
+        It 'Should call Get-AzureRestMethodUriPath and Invoke-AzRestMethod then return the response from the Azure REST API with query string and request body' {
+            $commonCmdletParams.QueryString = 'test=test'
+            $commonCmdletParams.RequestBody = 'test'
+            $result = Invoke-AzureRestApi @commonCmdletParams
+
+            Should -InvokeVerifiable
+            $result.Content | Should -BeExactly $expected
+        }
+    }
+    
+    Context 'When to invoke an Azure REST API with a path WITHOUT resource group' {
+        BeforeEach {
+            $commonCmdletParams = @{
+                Method               = 'GET'
+                SubscriptionId       = '11111111-1111-1111-1111-111111111111'
+                ResourceProviderName = 'Resource.Provider'
+                ResourceType         = 'resourceType'
+                ApiVersion           = '0000-00-00'
+            }
+        }
+
+        It 'Should call Get-AzureRestMethodUriPath and Invoke-AzRestMethod then return the response from the Azure REST API' {
+            $result = Invoke-AzureRestApi @commonCmdletParams
+
+            Should -InvokeVerifiable
+            $result.Content | Should -BeExactly $expected
+        }
+
+        It 'Should call Get-AzureRestMethodUriPath and Invoke-AzRestMethod then return the response from the Azure REST API with query string' {
+            $commonCmdletParams.QueryString = 'test=test'
+            $result = Invoke-AzureRestApi @commonCmdletParams
+
+            Should -InvokeVerifiable
+            $result.Content | Should -BeExactly $expected
+        }
+
+        It 'Should call Get-AzureRestMethodUriPath and Invoke-AzRestMethod then return the response from the Azure REST API with request body' {
+            $commonCmdletParams.RequestBody = 'test'
+            $result = Invoke-AzureRestApi @commonCmdletParams
+
+            Should -InvokeVerifiable
+            $result.Content | Should -BeExactly $expected
+        }
+
+        It 'Should call Get-AzureRestMethodUriPath and Invoke-AzRestMethod then return the response from the Azure REST API with query string and request body' {
+            $commonCmdletParams.QueryString = 'test=test'
+            $commonCmdletParams.RequestBody = 'test'
+            $result = Invoke-AzureRestApi @commonCmdletParams
+
+            Should -InvokeVerifiable
+            $result.Content | Should -BeExactly $expected
+        }
+    }
 }
 
 Describe 'New-WAFResourceRetirementObject' {
